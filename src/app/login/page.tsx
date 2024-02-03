@@ -1,11 +1,13 @@
 "use client";
-
 import Loader from "@/components/Loader";
 import LoginForm from "@/components/LoginForm";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { createUser } from "@/services/user";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { FaLocationCrosshairs } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import { saveLoginAndLocation } from "@/serverActions/user";
 
 const Login = () => {
   const [activeState, setActiveStage] = useState(1);
@@ -16,6 +18,8 @@ const Login = () => {
     email: "",
     mobile_no: "",
   });
+  const router = useRouter();
+  const { value, setItem } = useLocalStorage();
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -23,15 +27,19 @@ const Login = () => {
       location,
       ...response,
     };
-    const data = await createUser(body);
-    setIsLoading(false);
-    console.log("############ ", data);
+    try {
+      const data = await createUser(body);
+      setIsLoading(false);
+      await saveLoginAndLocation("[0, 0]", body.name);
+      router.push("/user/home");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleStateChange = () => {
     setActiveStage(activeState + 1);
   };
-  console.log("check enc ", process.env.NEXT_PUBLIC_MAP_API_KEY);
   return (
     <>
       {isLoading && <Loader />}
@@ -85,7 +93,7 @@ const Login = () => {
           )}
           {activeState === 2 && (
             <LoginForm
-              response={response}
+              response={JSON.parse(JSON.stringify(response))}
               setResponse={setResponse}
               handleSubmit={handleSubmit}
             />

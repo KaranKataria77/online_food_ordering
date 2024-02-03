@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import FoodItem from "../FoodItem";
 import { FaAngleDown } from "react-icons/fa6";
 
-const FoodRecommendation = () => {
+const FoodRecommendation = ({
+  handleCart,
+}: {
+  handleCart: (item: string, price: string) => void;
+}) => {
   const [show, setShow] = useState(true);
   return (
     <>
@@ -12,11 +16,11 @@ const FoodRecommendation = () => {
         <FaAngleDown />
       </div>
       <div className={show ? "" : "hidden"}>
-        <FoodItem />
-        <FoodItem />
-        <FoodItem />
-        <FoodItem />
-        <FoodItem />
+        <FoodItem title="French Fries" price="145" handleCart={handleCart} />
+        <FoodItem title="Vada Pav" price="15" handleCart={handleCart} />
+        <FoodItem title="Medu Wada" price="45" handleCart={handleCart} />
+        <FoodItem title="Dal Wada" price="45" handleCart={handleCart} />
+        <FoodItem title="Idli" price="35" handleCart={handleCart} />
       </div>
     </>
   );

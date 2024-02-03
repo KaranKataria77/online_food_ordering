@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 type IInputForm = {
@@ -13,7 +15,7 @@ const LoginForm = ({
 }: {
   response: IInputForm;
   setResponse: any;
-  handleSubmit: any;
+  handleSubmit?: any;
 }) => {
   return (
     <div className="flex flex-col items-center mt-16 md:mt-0">
@@ -60,7 +62,7 @@ const LoginForm = ({
         />
       </div>
       <button
-        onClick={handleSubmit}
+        onClick={() => handleSubmit()}
         className="flex w-full md:w-3/5 justify-center border border-solid border-orange-500 focus:outline-none mb-5 p-4 bg-orange-500 text-white font-bold"
       >
         SIGN UP
