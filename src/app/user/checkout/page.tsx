@@ -1,10 +1,16 @@
 "use client";
 import OrderFoodCard from "@/components/OrderFoodCard";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useOptimistic,
+  startTransition,
+} from "react";
 import { createCart, deactivateCart, getCart } from "@/services/cart";
 import { createOrder } from "@/services/order";
 import Spinner from "@/components/Loader/Spinner";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 const Checkout = () => {
   function BillDetails({
     title,
@@ -24,6 +30,11 @@ const Checkout = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [cartId, setCartId] = useState("");
+  const [message, setMessage] = useState("MAKE PAYMENT");
+  const [optimisticMessage, optimisticUpdate] = useOptimistic(
+    message,
+    (state, newMessage: string) => newMessage
+  );
 
   useEffect(() => {
     getActiveCart();
@@ -40,14 +51,20 @@ const Checkout = () => {
   };
 
   const placeOrder = async () => {
-    setIsLoading(true);
+    startTransition(() => {
+      setMessage("PLACING ORDER....");
+    });
     const body = {
       cartId,
       isOrderDelivered: false,
       isOrderCancelled: false,
     };
     const data = await createOrder(body);
-    setIsLoading(false);
+
+    startTransition(() => {
+      setMessage("ORDER PLACED!");
+    });
+
     console.log("order placed", data);
   };
 
@@ -63,8 +80,12 @@ const Checkout = () => {
   };
 
   return (
-    <div className="h-screen md:bg-slate-200 flex justify-center">
-      <div className="mt-12 md:mt-20 md:mb-10 w-full md:w-3/5 bg-white md:p-3 md:mr-10 md:flex md:flex-col md:justify-between">
+    <div className={`${isLoading ? "h-screen" : "h-full"} flex justify-center`}>
+      <div
+        className={`mt-12 md:mt-20 md:mb-10 w-full md:w-3/5 ${
+          !isLoading && "h-full"
+        } bg-white md:p-3 md:mr-10 md:flex md:flex-col md:justify-between`}
+      >
         {isLoading ? (
           <Spinner />
         ) : cartItems.length <= 0 ? (
@@ -78,7 +99,7 @@ const Checkout = () => {
           </div>
         ) : (
           <>
-            <div className="w-full px-3">
+            <div className="w-full h-full px-3">
               {cartItems &&
                 cartItems.length > 0 &&
                 cartItems.map((item, index) => (
@@ -102,21 +123,24 @@ const Checkout = () => {
                 subtitle="Rs 13"
               />
             </div>
-            <div className="flex h-12 w-full fixed md:relative bottom-0 md:mt-5">
-              <div className="w-1/2 flex items-center justify-center border border-slate-300">
-                <p className="text-sm">Rs 1129</p>
+            <div className="flex h-12 w-full fixed md:relative bottom-0 mt-3 md:mt-5">
+              <div className="w-1/2 flex items-center justify-center border border-slate-300 bg-white">
+                <p className="text-sm">Rs {totalPrice + 138 + 3 + 13}</p>
               </div>
               <button
                 onClick={placeOrder}
-                className="w-1/2 flex items-center justify-center font-semibold bg-green-500 text-white"
+                disabled={message === "ORDER PLACED!" ? true : false}
+                className={`w-1/2 flex items-center justify-center font-semibold ${
+                  message === "ORDER PLACED!" ? "bg-green-300" : "bg-green-500"
+                } text-white`}
               >
-                MAKE PAYMENT
+                {message}
               </button>
             </div>
           </>
         )}
       </div>
-      <div className="hidden md:block mt-20 md:w-1/4 mb-10 bg-white p-3">
+      <div className=" hidden md:block mt-20 md:w-1/4 mb-10 bg-white p-3">
         <p className="font-semibold text-lg">Delivery Address</p>
 
         <div className="border border-slate-300 p-3 mt-4">

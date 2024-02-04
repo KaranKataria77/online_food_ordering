@@ -6,7 +6,7 @@ import { FaStar, FaCartPlus } from "react-icons/fa6";
 import { BiCycling } from "react-icons/bi";
 import { BsClockFill } from "react-icons/bs";
 import FoodRecommendation from "@/components/FoodRecommendation";
-import { createCart, getCart } from "@/services/cart";
+import { createCart, getCart, updateCart } from "@/services/cart";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,10 +25,13 @@ const RestaurantDetail = () => {
     getActiveCart();
   }, []);
 
-  const handleCart = (item: string, price: string) => {
+  const handleCart = async (item: string, price: number) => {
     if (isLogin) {
+      if (cartItems.length <= 0) {
+        await AddItemsToCart(item, price);
+      }
       setCartItems([...cartItems, item]);
-      setTotalPrice(Number(price) + totalPrice);
+      setTotalPrice(price + totalPrice);
     } else {
       toaster.warn(
         {
@@ -53,20 +56,25 @@ const RestaurantDetail = () => {
     setIsLoading(false);
   };
 
-  const AddItemsToCart = async () => {
-    if (cartItems.length > 0) {
-      setIsLoading(true);
-      const body = {
-        foodItems: cartItems,
-        totalValue: totalPrice.toString(),
-        isCartActive: true,
-      };
-      const data = await createCart(body);
-      if (data && data !== undefined) {
-        setIsLoading(false);
-        router.push("/user/checkout");
-      }
-      console.log("$$$$$$$$$$$$$$$$$$$ data ", data);
+  const AddItemsToCart = async (items: string, price: number) => {
+    const body = {
+      foodItems: [items],
+      totalValue: price,
+      isCartActive: true,
+    };
+    const data = await createCart(body);
+  };
+
+  const SaveCart = async () => {
+    setIsLoading(true);
+    const body = {
+      foodItems: [...cartItems],
+      totalValue: totalPrice,
+    };
+    const data = await updateCart(body);
+    if (data && data !== undefined) {
+      setIsLoading(false);
+      router.push("/user/checkout");
     }
   };
 
@@ -173,7 +181,7 @@ const RestaurantDetail = () => {
                 {cartItems.length} ITEMS | Rs {totalPrice}
               </p>
               <div
-                onClick={AddItemsToCart}
+                onClick={SaveCart}
                 className="text-lg font-bold flex items-center cursor-pointer"
               >
                 <FaCartPlus className="mr-1" /> VIEW CART

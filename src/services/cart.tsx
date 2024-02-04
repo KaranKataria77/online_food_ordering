@@ -7,12 +7,18 @@ import axios from "axios";
 
 type ICartBody = {
   foodItems: string[];
-  totalValue: string;
-  isCartActive: boolean;
+  totalValue: number;
+  isCartActive?: boolean;
 };
 
 export const createCart = async (body: ICartBody) => {
   const result = await axios.post(`${CLIENT_BASE_URL}${CART_URL}`, body, {
+    withCredentials: true,
+  });
+  return result.data;
+};
+export const updateCart = async (body: ICartBody) => {
+  const result = await axios.patch(`${CLIENT_BASE_URL}${CART_URL}`, body, {
     withCredentials: true,
   });
   return result.data;

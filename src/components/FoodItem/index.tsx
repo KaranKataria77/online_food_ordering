@@ -8,8 +8,8 @@ const FoodItem = ({
   handleCart,
 }: {
   title: string;
-  price: string;
-  handleCart: (item: string, price: string) => void;
+  price: number;
+  handleCart: (item: string, price: number) => void;
 }) => {
   return (
     <div className="flex justify-between py-10 border-b-2">
