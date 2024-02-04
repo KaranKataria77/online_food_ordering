@@ -2,7 +2,7 @@
 import Loader from "@/components/Loader";
 import LoginForm from "@/components/LoginForm";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { createUser } from "@/services/user";
+import { createUser, logInUser } from "@/services/user";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { FaLocationCrosshairs } from "react-icons/fa6";
@@ -13,6 +13,7 @@ const Login = () => {
   const [activeState, setActiveStage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState([]);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [response, setResponse] = useState({
     name: "",
     email: "",
@@ -23,22 +24,41 @@ const Login = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const body = {
-      location,
-      ...response,
-    };
-    try {
-      const data = await createUser(body);
-      setIsLoading(false);
-      await saveLoginAndLocation("[0, 0]", body.name);
-      router.push("/user/home");
-    } catch (err) {
-      console.error(err);
+    if (isSignUp) {
+      const body = {
+        location,
+        ...response,
+      };
+      try {
+        const data = await createUser(body);
+        setIsLoading(false);
+        await saveLoginAndLocation("[0, 0]", body.name);
+        router.push("/user/home");
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      const body = {
+        email: response.email,
+        mobile_no: response.mobile_no,
+      };
+      try {
+        const data = await logInUser(body);
+        setIsLoading(false);
+        await saveLoginAndLocation("[0, 0]", data.user.name);
+        router.push("/user/home");
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
   const handleStateChange = () => {
     setActiveStage(activeState + 1);
+  };
+
+  const isSignUpState = () => {
+    setIsSignUp(!isSignUp);
   };
   return (
     <>
@@ -48,12 +68,6 @@ const Login = () => {
           {activeState === 1 && (
             <div className="flex justify-between h-50">
               <h1 className="p-1 text-2xl font-bold">Swiggy</h1>
-              <div className="flex">
-                <button className="p-2 px-7 font-medium">Login</button>
-                <button className="p-2 px-7 bg-black text-white font-bold">
-                  Sign Up
-                </button>
-              </div>
             </div>
           )}
           {activeState === 1 && (
@@ -96,6 +110,8 @@ const Login = () => {
               response={JSON.parse(JSON.stringify(response))}
               setResponse={setResponse}
               handleSubmit={handleSubmit}
+              isSignUp={isSignUp}
+              isSignUpState={isSignUpState}
             />
           )}
         </div>

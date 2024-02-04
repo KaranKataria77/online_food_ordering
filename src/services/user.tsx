@@ -1,14 +1,24 @@
-import { CLIENT_BASE_URL, USER_URL } from "@/config/URLEndpoints";
+import {
+  CLIENT_BASE_URL,
+  LOGIN_USER_URL,
+  USER_URL,
+} from "@/config/URLEndpoints";
 import axios from "axios";
 
 type IUserBody = {
-  name: string;
+  name?: string;
   email: string;
   mobile_no: string;
 };
 
 export const createUser = async (body: IUserBody) => {
   const result = await axios.post(`${CLIENT_BASE_URL}${USER_URL}`, body, {
+    withCredentials: true,
+  });
+  return result.data;
+};
+export const logInUser = async (body: IUserBody) => {
+  const result = await axios.post(`${CLIENT_BASE_URL}${LOGIN_USER_URL}`, body, {
     withCredentials: true,
   });
   return result.data;
