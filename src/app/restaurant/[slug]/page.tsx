@@ -7,22 +7,31 @@ import { BiCycling } from "react-icons/bi";
 import { BsClockFill } from "react-icons/bs";
 import FoodRecommendation from "@/components/FoodRecommendation";
 import { createCart, getCart, updateCart } from "@/services/cart";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import useUserLogin from "@/hooks/useUserLogin";
+import { rest } from "@/dummyData";
 
 const RestaurantDetail = () => {
   const [cartItems, setCartItems] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const params = useParams();
   const { isLogin }: { isLogin: boolean } = useUserLogin();
+  const [foodItems, setFoodItems] = useState<{ name: string; price: number }[]>(
+    []
+  );
+  const [restaurant, setRestaurant] = useState("");
 
   useEffect(() => {
     getActiveCart();
+    const fodItems: any = rest.find((item: any) => item.index == params.slug);
+    setFoodItems(fodItems ? fodItems.foodItems : []);
+    setRestaurant(fodItems?.name);
   }, []);
 
   const handleCart = async (item: string, price: number) => {
@@ -118,7 +127,7 @@ const RestaurantDetail = () => {
         {/* title */}
         <div className="px-5 flex justify-between mt-3">
           <div>
-            <h1 className="font-bold text-lg">Zaika Fine Dine</h1>
+            <h1 className="font-bold text-lg">{restaurant}</h1>
             <div className="mt-2">
               <p className="text-xs opacity-70">Indian, Chinese</p>
               <p className="text-xs opacity-70 mt-1">Dombivli East, 0.8 km</p>
@@ -166,11 +175,11 @@ const RestaurantDetail = () => {
 
         {/* lists of dishes */}
         <div className="px-5 my-7">
-          <FoodRecommendation handleCart={handleCart} />
+          <FoodRecommendation handleCart={handleCart} foodItems={foodItems} />
         </div>
         <div className="bg-gray-200 h-5"></div>
         <div className="px-5 my-7">
-          <FoodRecommendation handleCart={handleCart} />
+          <FoodRecommendation handleCart={handleCart} foodItems={foodItems} />
         </div>
         <div className="bg-gray-200 h-5"></div>
         {/* item cart detail */}

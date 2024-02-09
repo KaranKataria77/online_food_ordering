@@ -8,8 +8,18 @@ import Image from "next/image";
 import React from "react";
 import { cookies } from "next/headers";
 import { SERVER_BASE_URL, USER_URL } from "@/config/URLEndpoints";
+import Link from "next/link";
+import { rest } from "../../../dummyData";
 
 const Home = async () => {
+  const images = [
+    "/toppicks/samosa.png",
+    "/toppicks/chinese.png",
+    "/toppicks/fries.png",
+    "/toppicks/pasta.png",
+    "/toppicks/1.webp",
+    "/toppicks/1.webp",
+  ];
   const cookiesStore = cookies();
   const name = cookiesStore.get("user_token");
   console.log("$$$$$$$$$$$$$$ ", name);
@@ -32,13 +42,13 @@ const Home = async () => {
     <div>
       <div className="px-3 py-4 md:px-48">
         {/* <Loading /> */}
-        <div className="flex justify-between md:hidden">
+        {/* <div className="flex justify-between md:hidden">
           <TopSlide src="/slider1/1.webp" />
           <TopSlide src="/slider1/2.webp" />
-        </div>
+        </div> */}
 
         {/* tops picks */}
-        <div className="mt-8 md:mt-16">
+        <div className="mt-14 md:mt-16">
           <div className="flex">
             <div className="w-6 h-6 relative">
               <Image fill={true} src="/thumbsup.webp" alt="" />
@@ -48,13 +58,11 @@ const Home = async () => {
             </p>
           </div>
           <div className="flex mt-5 overflow-auto" id="cont">
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
-            <TopPickCard src="/toppicks/1.webp" />
+            {rest?.map((item, index) => (
+              <Link href={`/restaurant/${item.index}`} key={index}>
+                <TopPickCard name={item?.name} src={images[index]} />
+              </Link>
+            ))}
           </div>
         </div>
 

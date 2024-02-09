@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-const TopPickCard = ({ src }: { src: string }) => {
+const TopPickCard = ({ src, name }: { src: string; name: string }) => {
   return (
     <div className="mr-3">
       <div className="relative">
@@ -34,7 +34,7 @@ const TopPickCard = ({ src }: { src: string }) => {
         </div>
       </div>
       <div className="mt-3">
-        <h3 className="text-sm font-normal">Burger King</h3>
+        <h3 className="text-sm font-normal">{name}</h3>
         <p className="text-sm opacity-60">20 mins</p>
       </div>
     </div>

@@ -2,7 +2,13 @@ import Image from "next/image";
 import React from "react";
 import { FaStar } from "react-icons/fa";
 
-const RestaurantsNearbyCard = ({ src }: { src: string }) => {
+const RestaurantsNearbyCard = ({
+  src,
+  name,
+}: {
+  src: string;
+  name: string;
+}) => {
   return (
     <div className="flex items-center mt-12 md:flex-col md:items-start">
       <div className="relative">
@@ -36,7 +42,7 @@ const RestaurantsNearbyCard = ({ src }: { src: string }) => {
       </div>
 
       <div className="pl-4 md:pl-2 md:pt-2">
-        <p className="text-md font-bold opacity-90">Theobroma</p>
+        <p className="text-md font-bold opacity-90">{name}</p>
         <div className="flex text-xs md:text-sm font-medium opacity-80 py-1">
           <span
             style={{ padding: 3, fontSize: 12 }}
