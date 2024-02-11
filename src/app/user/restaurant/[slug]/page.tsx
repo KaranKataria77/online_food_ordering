@@ -57,34 +57,56 @@ const RestaurantDetail = () => {
   };
 
   const getActiveCart = async () => {
-    const data = await getCart();
-    if (data && data.foodItems !== undefined) {
-      setCartItems(data.foodItems as string[]);
-      setTotalPrice(data.totalValue || 0);
+    try {
+      const data = await getCart();
+      if (data && data.foodItems !== undefined) {
+        setCartItems(data.foodItems as string[]);
+        setTotalPrice(data.totalValue || 0);
+      }
+    } catch {
+      toast.error("Sorry Server is down, Please try again later", {
+        position: "top-center",
+        icon: false,
+      });
     }
     setIsLoading(false);
   };
 
   const AddItemsToCart = async (items: string, price: number) => {
-    const body = {
-      foodItems: [items],
-      totalValue: price,
-      isCartActive: true,
-    };
-    const data = await createCart(body);
+    try {
+      const body = {
+        foodItems: [items],
+        totalValue: price,
+        isCartActive: true,
+      };
+      const data = await createCart(body);
+    } catch {
+      toast.error("Something went wrong, Please try again later", {
+        position: "top-center",
+        icon: false,
+      });
+    }
   };
 
   const SaveCart = async () => {
     setIsLoading(true);
-    const body = {
-      foodItems: [...cartItems],
-      totalValue: totalPrice,
-    };
-    const data = await updateCart(body);
-    if (data && data !== undefined) {
-      setIsLoading(false);
-      router.push("/user/checkout");
+    try {
+      const body = {
+        foodItems: [...cartItems],
+        totalValue: totalPrice,
+      };
+      const data = await updateCart(body);
+      if (data && data !== undefined) {
+        router.push("/user/checkout");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong, Please try again later", {
+        position: "top-center",
+        icon: false,
+      });
     }
+    setIsLoading(false);
   };
 
   const Msg = ({ title, text }: { title: string; text: string }) => {

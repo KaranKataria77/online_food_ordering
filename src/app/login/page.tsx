@@ -5,16 +5,16 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { createUser, logInUser } from "@/services/user";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { saveLoginAndLocation } from "@/serverActions/user";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FindLocation from "@/components/FindLocation";
 
 const Login = () => {
   const [activeState, setActiveStage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState([]);
+  const [location, setLocation] = useState<number[]>([]);
   const [isSignUp, setIsSignUp] = useState(false);
   const [response, setResponse] = useState({
     name: "",
@@ -76,8 +76,11 @@ const Login = () => {
     }
   };
 
-  const handleStateChange = () => {
+  const handleStateChange = (coords?: number[]) => {
     setActiveStage(activeState + 1);
+    if (coords) {
+      setLocation(coords);
+    }
   };
 
   const isSignUpState = () => {
@@ -94,39 +97,7 @@ const Login = () => {
             </div>
           )}
           {activeState === 1 && (
-            <div>
-              <div className="mt-14 md:mt-10">
-                <h1 className="text-4xl font-bold">Game Night?</h1>
-                <h3 className="text-xl mt-4">
-                  Order food from favourite restaurants near you.
-                </h3>
-              </div>
-              <div className="mt-14 md:mt-8 md:flex w-full">
-                <div className="flex md:w-3/5 justify-between border border-solid border-orange-500 focus:outline-none">
-                  <input
-                    type="text"
-                    placeholder="Enter your delivery location"
-                    className="focus:outline-none p-4"
-                  />
-                  <div className="text-2xl flex items-center justify-center mr-2 opacity-50">
-                    <FaLocationCrosshairs />
-                  </div>
-                </div>
-                <button
-                  onClick={handleStateChange}
-                  className="w-full md:w-auto p-3 px-6 bg-orange-500 text-white font-bold"
-                >
-                  FIND FOOD
-                </button>
-              </div>
-              <div className="mt-14 md:mt-8">
-                <h3 className="text-sm opacity-60">POPULAR CITIES IN INDIA</h3>
-                <p className="text-sm mt-3">
-                  Ahmedabad, Bangalore, Chennai, Delhi, Gurgaon, Hyderabad,
-                  Kolkata, Mumbai, Pune & more
-                </p>
-              </div>
-            </div>
+            <FindLocation handleStateChange={handleStateChange} />
           )}
           {activeState === 2 && (
             <LoginForm
