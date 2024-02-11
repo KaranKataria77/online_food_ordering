@@ -18,7 +18,12 @@ const FindLocation = ({
       </div>
       <div className="mt-14 md:mt-8 md:flex w-full">
         <div className="flex md:w-3/5 justify-between border border-solid border-orange-500 focus:outline-none">
-          <Places addLocation={handleStateChange} />
+          <input
+            type="text"
+            placeholder="Search an address"
+            className="w-full p-3 outline-none"
+          />
+          {/* <Places addLocation={handleStateChange} /> */}
           <div className="text-2xl flex items-center justify-center mr-2 opacity-50">
             <FaLocationCrosshairs />
           </div>
