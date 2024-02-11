@@ -89,7 +89,7 @@ const LoginForm = ({
         onClick={() => handleSubmit()}
         className="flex w-full md:w-3/5 justify-center border border-solid border-orange-500 focus:outline-none mb-5 p-4 bg-orange-500 text-white font-bold"
       >
-        SIGN UP
+        {isSignUp ? "SIGN UP" : "LOGIN"}
       </button>
     </div>
   );

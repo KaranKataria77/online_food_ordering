@@ -59,7 +59,7 @@ const Home = async () => {
           </div>
           <div className="flex mt-5 overflow-auto" id="cont">
             {rest?.map((item, index) => (
-              <Link href={`/restaurant/${item.index}`} key={index}>
+              <Link href={`/user/restaurant/${item.index}`} key={index}>
                 <TopPickCard name={item?.name} src={images[index]} />
               </Link>
             ))}

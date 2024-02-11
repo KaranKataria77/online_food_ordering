@@ -56,7 +56,7 @@ const Checkout = () => {
     });
     const body = {
       cartId,
-      isOrderDelivered: false,
+      isOrderDelivered: true,
       isOrderCancelled: false,
     };
     const data = await createOrder(body);

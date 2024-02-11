@@ -15,7 +15,7 @@ const RestaurantsNearby = () => {
   return (
     <div className="mt-8 md:mt-0 md:flex md:flex-wrap">
       {rest?.map((item, index) => (
-        <Link href={`/restaurant/${index}`} key={index}>
+        <Link href={`/user/restaurant/${item?.index}`} key={index}>
           <RestaurantsNearbyCard name={item?.name} src={images[index]} />
         </Link>
       ))}
